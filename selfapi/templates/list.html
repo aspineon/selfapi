@@ -1,0 +1,14 @@
+<html>
+  <head>
+
+  </head>
+  <body>
+    {% if entries %}
+    <ul>
+      {% for entry in entries %}
+      <li>{{ entry.title }}: {{ entry.value }} ({{ entry.timestamp}})
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </body>
+</html>
