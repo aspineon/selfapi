@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Diet Entries</h1>
+{% if entries %}
+  {% for entry in entries %}
+  <div><p>{{entry.title}}: <b>{{entry.value}}</b></p></div>
+  {% endfor %}
+{% else %}
+<p>There are no entries so far.</p>
+{% endif %}
+{% endblock %}
