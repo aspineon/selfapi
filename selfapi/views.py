@@ -1,8 +1,6 @@
 from flask import render_template, request
-from . import app
+from . import app, api
 from models import *
-from forms import DietForm
-
 
 @app.route('/')
 def index():
@@ -10,7 +8,6 @@ def index():
     entries = list(collection.DietEntry.find())
     return render_template('list.html', entries=entries)
 
-@app.route('/diet', methods = ['GET', 'POST'])
+@app.route('/diet', methods = ['GET'])
 def diet_form():
-    form = DietForm()
-    return render_template('diet_form.html', form = form)
+    return render_template('diet_form.html')
