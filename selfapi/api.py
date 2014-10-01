@@ -28,7 +28,8 @@ class Diet(Resource):
         entry.title = request.form['title']
         entry.value = int(request.form['value'])
         entry.created_at = datetime.datetime.now()
-        entry.timestamp = datetime.datetime.strptime(request.form['timestamp'], '%Y-%m-%d %H:%M')
+        if request.form['timestamp']:
+            entry.timestamp = datetime.datetime.strptime(request.form['timestamp'], '%Y-%m-%d %H:%M')
         entry.save()
         return {'status': 'success'}, 202
 
