@@ -23,5 +23,7 @@ class Profile(Document):
         'height': int
     }
 
+    use_dot_notation = True
+    required_fields = ['name', 'birthday', 'height']
 
-con.register([DietEntry])
+con.register([DietEntry, Profile])
