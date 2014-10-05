@@ -1,7 +1,7 @@
-from . import con, api
+from . import db, api
 from flask.ext.restful import reqparse, Resource
 from flask import jsonify, request
-import datetime
+from datetime import datetime
 import json
 from bson import json_util
 from bson.objectid import ObjectId
@@ -14,7 +14,7 @@ def toJson(data):
 
 class Diet(Resource):
     def get(self):
-        collection = con['selfapi'].diet
+        collection = db.diet
         entries = collection.DietEntry.find()
         json_entries = []
         for entry in entries:
@@ -23,13 +23,13 @@ class Diet(Resource):
 
     def post(self):
         args = parser.parse_args()
-        collection = con['selfapi'].diet
+        collection = db.diet
         entry = collection.DietEntry()
         entry.title = request.form['title']
         entry.value = int(request.form['value'])
-        entry.created_at = datetime.datetime.now()
+        entry.created_at = datetime.now()
         if request.form['timestamp']:
-            entry.timestamp = datetime.datetime.strptime(request.form['timestamp'], '%Y-%m-%d %H:%M')
+            entry.timestamp = datetime.strptime(request.form['timestamp'], '%Y-%m-%d %H:%M')
         entry.save()
         return {'status': 'success'}, 202
 

@@ -1,20 +1,27 @@
 from . import con
 from mongokit import *
-import datetime
+from datetime import datetime
 
 
 class DietEntry(Document):
     structure = {
-        'timestamp': datetime.datetime,
-        'created_at': datetime.datetime,
+        'timestamp': datetime,
+        'created_at': datetime,
         'title': unicode,
         'value': int
     }
 
     use_dot_notation = True
-
     required_fields = ['timestamp', 'title', 'value']
-    default_values = {'timestamp': datetime.datetime.now, 'created_at': datetime.datetime.now}
+    default_values = {'timestamp': datetime.now, 'created_at': datetime.now}
+
+
+class Profile(Document):
+    structure = {
+        'name': unicode,
+        'birthday': datetime,
+        'height': int
+    }
 
 
 con.register([DietEntry])

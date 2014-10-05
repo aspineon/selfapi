@@ -9,6 +9,7 @@ app.config.from_pyfile('config.py')
 api = Api(app)
 
 con = Connection(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
+db = con.selfapi
 
 import api
 import views
