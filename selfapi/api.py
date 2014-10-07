@@ -1,36 +1,60 @@
 from . import db, api
-from flask.ext.restful import reqparse, Resource
-from flask import jsonify, request
+from flask.ext.restful import reqparse, Resource, abort, fields, marshal_with
 from datetime import datetime
-import json
-from bson import json_util
 from bson.objectid import ObjectId
 
 parser = reqparse.RequestParser()
-parser.add_argument('diet', type=str)
 
-def toJson(data):
-    return json.dumps(data, default=json_util.default)
 
-class Diet(Resource):
+def wrap_as_list(cursor):
+    return [x for x in cursor]
+
+
+diet_fields = {
+    '_id': fields.String,
+    'title': fields.String,
+    'value': fields.Integer,
+    'timestamp': fields.DateTime,
+    'created_at': fields.DateTime,
+}
+
+
+class DietList(Resource):
+    @marshal_with(diet_fields)
     def get(self):
         collection = db.diet
         entries = collection.DietEntry.find()
-        json_entries = []
-        for entry in entries:
-            json_entries.append(entry)
-        return toJson(json_entries)
+        if not entries:
+            abort(404, message="No entries found")
+        return wrap_as_list(entries)
+
+
+class Diet(Resource):
+    @marshal_with(diet_fields)
+    def get(self, entry_id):
+        collection = db.diet
+        entry = collection.DietEntry.find_one({"_id": ObjectId(entry_id)})
+        if not entry:
+            abort(404, message="Diet Entry {} doesn't exist".format(entry_id))
+        return entry
 
     def post(self):
+        parser.add_argument('title', type=str, required=True)
+        parser.add_argument('value', type=int, required=True)
+        parser.add_argument('timestamp', type=str)
         args = parser.parse_args()
+
         collection = db.diet
         entry = collection.DietEntry()
-        entry.title = request.form['title']
-        entry.value = int(request.form['value'])
-        entry.created_at = datetime.now()
-        if request.form['timestamp']:
-            entry.timestamp = datetime.strptime(request.form['timestamp'], '%Y-%m-%d %H:%M')
-        entry.save()
-        return {'status': 'success'}, 202
 
-api.add_resource(Diet, '/api/diet')
+        entry.title = args['title']
+        entry.value = args['value']
+        entry.created_at = datetime.now()
+        if args['timestamp']:
+            entry.timestamp = datetime.strptime(args['timestamp'], '%Y-%m-%d %H:%M')
+        entry.save()
+
+        return {'status': 'created'}, 202
+
+api.add_resource(DietList, '/api/diet')
+api.add_resource(Diet, '/api/diet/<string:entry_id>')
