@@ -1,11 +1,73 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <h1>Diet Entries</h1>
 {% if entries %}
-  {% for entry in entries %}
-  <div><p>{{entry.title}}: <b>{{entry.value}}</b></p></div>
-  {% endfor %}
+
+<div>
+    <table class="table">
+        <tr>
+            <th>Time</th>
+            <th>Title</th>
+            <th>Value</th>
+        </tr>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.timestamp }}</td>
+            <td>{{ entry.title }}</td>
+            <td {% if entry.value > 0 %} class="info" {% else %} class="success" {% endif %}>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 {% else %}
-<p>There are no entries so far.</p>
+<div class="alert alert-warning fade in" role="alert">
+    <strong>Holy guacamole!</strong> Seems like you don't have any entries so far.
+</div>
 {% endif %}
+
+<hr>
+
+<h1>Add a new Diet Entry</h1>
+
+
+
+<form action="api/diet" method="post" id="diet" name="diet" role="form">
+    <div class="form-group">
+        <label for="titel">Titel</label>
+        <input type="text" class="form-control" id="titel" name="title" placeholder="Beschreibung der Aktivität"
+               required>
+    </div>
+
+    <div class="form-group">
+        <label for="value">Wert</label>
+        <input type="number" class="form-control" id="value" name="value" placeholder="0" required>
+
+        <p class="help-block">Insert a the number of calories eaten/burned as an integer.
+            Positive integer for caloric intake, negative integer for a deficit.</p>
+    </div>
+
+    <div class="form-group">
+        <label for="timestamp">Time</label>
+        <input type="datetime" class="form-control" id="timestamp" name="timestamp" placeholder="YYYY-mm-dd HH:MM">
+    </div>
+
+
+    <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
+</form>
+
+<script>
+        $('#submitButton').click( function(event) {
+            $.post( 'api/diet', $('form#diet').serialize(), function(data) {
+                 $(".alert").html("Erfolgreich gesendet: " + data.status)
+                 $(".alert").alert()
+               },
+               'json' // I expect a JSON response
+            );
+            event.preventDefault();
+        });
+
+</script>
 {% endblock %}

@@ -9,7 +9,8 @@ def index():
 
 @app.route('/diet', methods = ['GET'])
 def diet_form():
-    return render_template('diet_form.html')
+    entries = list(db.diet.DietEntry.find())
+    return render_template('diet.html', entries = entries)
 
 @app.route('/profile', methods = ['GET'])
 def profile():
