@@ -36,8 +36,8 @@
 
 <form action="api/diet" method="post" id="diet" name="diet" role="form">
     <div class="form-group">
-        <label for="titel">Titel</label>
-        <input type="text" class="form-control" id="titel" name="title" placeholder="Beschreibung der Aktivität"
+        <label for="title">Titel</label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Beschreibung der Aktivität"
                required>
     </div>
 
@@ -59,7 +59,7 @@
 </form>
 
 <script>
-        $('#submitButton').click( function(event) {
+        $('#diet').submit( function(event) {
             $.post( 'api/diet', $('form#diet').serialize(), function(data) {
                  $(".alert").html("Erfolgreich gesendet: " + data.status)
                  $(".alert").alert()
