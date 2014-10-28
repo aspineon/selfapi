@@ -13,7 +13,7 @@ class DietEntry(Document):
 
     use_dot_notation = True
     required_fields = ['timestamp', 'title', 'value']
-    default_values = {'timestamp': datetime.now, 'created_at': datetime.now}
+    default_values = {'timestamp': datetime.now(), 'created_at': datetime.now().strftime('%Y-%m-%d %H:%M')}
 
 
 class Profile(Document):
