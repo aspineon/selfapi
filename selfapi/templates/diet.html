@@ -11,12 +11,16 @@
             <th>Time</th>
             <th>Title</th>
             <th>Value</th>
+            <th><span class="glyphicon glyphicon-eye-open"></span></th>
+            <th><span class="glyphicon glyphicon-remove"></span></th>
         </tr>
         {% for entry in entries %}
         <tr>
             <td>{{ entry.timestamp }}</td>
             <td>{{ entry.title }}</td>
             <td {% if entry.value > 0 %} class="info" {% else %} class="success" {% endif %}>{{ entry.value }}</td>
+            <th><a href='#'><span class="glyphicon glyphicon-eye-open"></span></a></th>
+            <th><a href='#'><span class="glyphicon glyphicon-remove"></span></a></th>
         </tr>
         {% endfor %}
     </table>
@@ -57,17 +61,4 @@
 
     <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
 </form>
-
-<script>
-        $('#diet').submit( function(event) {
-            $.post( 'api/diet', $('form#diet').serialize(), function(data) {
-                 $(".alert").html("Erfolgreich gesendet: " + data.status)
-                 $(".alert").alert()
-               },
-               'json' // I expect a JSON response
-            );
-            event.preventDefault();
-        });
-
-</script>
 {% endblock %}
