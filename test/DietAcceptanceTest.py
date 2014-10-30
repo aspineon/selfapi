@@ -24,7 +24,7 @@ class DietAPIFT(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_post_entry_should_return_200(self):
+    def test_post_entry_should_return_201(self):
         entry = models.DietEntry()
         entry.timestamp = u'2014-10-10 10:00'
         entry.title = u'Frühstück'
@@ -32,7 +32,9 @@ class DietAPIFT(unittest.TestCase):
 
         response = requests.post('http://localhost:5000/api/diet', data=entry)
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 201)
+        self.assertDictContainsSubset({'status': 'created'}, response.json())
+        self.assertIsNotNone(response.json()["id"])
 
 
 if __name__ == '__main__':

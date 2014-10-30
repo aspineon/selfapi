@@ -30,7 +30,6 @@ class DietList(Resource):
         return wrap_as_list(entries)
 
     def post(self):
-        print(request)
         parser.add_argument('title', type=unicode, required=True)
         parser.add_argument('value', type=int, required=True)
         parser.add_argument('timestamp', type=unicode)
@@ -46,7 +45,7 @@ class DietList(Resource):
             entry.timestamp = datetime.strptime(args['timestamp'], '%Y-%m-%d %H:%M')
         entry.save()
 
-        return {'status': 'created'}, 201
+        return {'status': 'created', 'id': str(entry._id)}, 201
 
 
 class Diet(Resource):
