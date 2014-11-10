@@ -1,10 +1,10 @@
 # coding: utf-8
 
 import selfapi
+from selfapi import DietEntry
 import unittest
 import requests
 import json
-from selfapi import models
 from datetime import datetime
 
 class DietAPIFT(unittest.TestCase):
@@ -25,10 +25,7 @@ class DietAPIFT(unittest.TestCase):
 
 
     def test_post_entry_should_return_201(self):
-        entry = models.DietEntry()
-        entry.timestamp = u'2014-10-10 10:00'
-        entry.title = u'Frühstück'
-        entry.value = 700
+        entry = DietEntry(title='Frühstück', value=700, timestamp='2014-10-10 10:00')
 
         response = requests.post('http://localhost:5000/api/diet', data=entry)
 

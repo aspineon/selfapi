@@ -1,4 +1,4 @@
-from selfapi import db, con
+from selfapi import db
 
 
 def clean():
