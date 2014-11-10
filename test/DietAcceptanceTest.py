@@ -25,13 +25,24 @@ class DietAPIFT(unittest.TestCase):
 
 
     def test_post_entry_should_return_201(self):
-        entry = DietEntry(title='Frühstück', value=700, timestamp='2014-10-10 10:00')
+        entry = DietEntry(title='Test: Frühstück', value=700, timestamp='2014-10-10 10:00')
 
         response = requests.post('http://localhost:5000/api/diet', data=entry.__dict__)
 
         self.assertEqual(response.status_code, 201)
         self.assertDictContainsSubset({'status': 'created'}, response.json())
         self.assertIsNotNone(response.json()["id"])
+
+
+    def test_post_invalid_entry_should_return_400(self):
+        entry = {
+            "title": "Invalid Entry",
+            "value": "value"
+        }
+
+        response = requests.post('http://localhost:5000/api/diet', data=entry)
+
+        self.assertEqual(response.status_code, 400)
 
 
 if __name__ == '__main__':
