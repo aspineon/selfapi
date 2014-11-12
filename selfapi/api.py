@@ -1,6 +1,6 @@
 from . import db, api, DietEntry, Profile
 from flask.ext.restful import reqparse, Resource, abort, fields, marshal_with
-from datetime import datetime
+from datetime import datetime, timedelta
 
 parser = reqparse.RequestParser()
 
@@ -21,10 +21,20 @@ diet_fields = {
 class DietList(Resource):
     @marshal_with(diet_fields)
     def get(self):
-        entries = DietEntry.query.all()
+        parser.add_argument('date', type=unicode)
+        args = parser.parse_args()
+
+        if args.date:
+            date = datetime.strptime(args.date, '%Y-%m-%d')
+            entries = DietEntry.query.filter(DietEntry.timestamp.between(date, date + timedelta(days=1)))
+        else :
+            entries = DietEntry.query.all()
+
         if not entries:
             abort(404, message="No entries found")
+
         return wrap_as_list(entries)
+
 
     def post(self):
         parser.add_argument('title', type=unicode, required=True)
@@ -32,11 +42,11 @@ class DietList(Resource):
         parser.add_argument('timestamp', type=unicode)
         args = parser.parse_args()
 
-        entry = DietEntry(title=args['title'], value=args['value'])
+        entry = DietEntry(title=args.title, value=args.value)
 
         entry.created_at = datetime.now()
-        if args['timestamp']:
-            entry.timestamp = datetime.strptime(args['timestamp'], '%Y-%m-%d %H:%M')
+        if args.timestamp:
+            entry.timestamp = datetime.strptime(args.timestamp, '%Y-%m-%d %H:%M')
 
         db.session.add(entry)
         db.session.commit()

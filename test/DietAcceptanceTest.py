@@ -25,7 +25,7 @@ class DietAPIFT(unittest.TestCase):
 
 
     def test_post_entry_should_return_201(self):
-        entry = DietEntry(title='Test: Frühstück', value=700, timestamp='2014-10-10 10:00')
+        entry = DietEntry(title='Test: Frühstück', value=700, timestamp=datetime.now().strftime('%Y-%m-%d %H:%M'))
 
         response = requests.post('http://localhost:5000/api/diet', data=entry.__dict__)
 
