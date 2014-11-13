@@ -11,11 +11,12 @@ diet_fields = {
     'title': fields.String,
     'value': fields.Integer,
     'timestamp': fields.DateTime,
-    'created_at': fields.DateTime,
+    'creation_date': fields.DateTime,
 }
 
 
 class DietList(Resource):
+
     @marshal_with(diet_fields)
     def get(self):
         parser = reqparse.RequestParser()
@@ -23,7 +24,6 @@ class DietList(Resource):
         args = parser.parse_args()
 
         if args.date:
-            print("with date")
             date = datetime.strptime(args.date, '%Y-%m-%d')
             entries = DietEntry.query.filter(DietEntry.timestamp.between(date, date + timedelta(days=1)))
         else :
@@ -44,7 +44,6 @@ class DietList(Resource):
 
         entry = DietEntry(title=args.title, value=args.value)
 
-        entry.created_at = datetime.now()
         if args.timestamp:
             entry.timestamp = datetime.strptime(args.timestamp, '%Y-%m-%d %H:%M')
 
@@ -55,12 +54,22 @@ class DietList(Resource):
 
 
 class Diet(Resource):
-    @marshal_with(diet_fields)
-    def get(self, entry_id):
-        entry = DietEntry.query.filter_by(id=entry_id)
+    def find(self, entry_id):
+        entry = DietEntry.query.get(entry_id)
         if not entry:
             abort(404, message="Diet Entry {} doesn't exist".format(entry_id))
         return entry
 
+    @marshal_with(diet_fields)
+    def get(self, entry_id):
+        return self.find(entry_id)
+
+
+    def delete(self, entry_id):
+        entry = self.find(entry_id)
+        db.session.delete(entry)
+        db.session.commit()
+
+
 api.add_resource(DietList, '/api/diet')
-api.add_resource(Diet, '/api/diet/<string:entry_id>')
+api.add_resource(Diet, '/api/diet/<int:entry_id>')
