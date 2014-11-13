@@ -10,6 +10,6 @@ api = Api(app)
 
 db = SQLAlchemy(app)
 
-from database import DietEntry, Profile
+from models import DietEntry, Profile
 import api
 import views
