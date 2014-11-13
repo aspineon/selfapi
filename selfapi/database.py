@@ -11,7 +11,7 @@ class DietEntry(db.Model):
     def __init__(self, title, value, timestamp=None):
         self.title = title
         self.value = value
-        self.timestamp = timestamp or datetime.now().strftime('%Y-%m-%d %H:%M')
+        self.timestamp = timestamp or datetime.now()
         self.creation_date = datetime.now()
 
     def __repr__(self):
