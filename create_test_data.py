@@ -1,8 +1,11 @@
-from selfapi import db
+from selfapi import db, DietEntry
 
 
 def clean():
-    pass
+    db.drop_all()
 
 def init():
-    pass
+    db.create_all()
+    entry = DietEntry(title="Foobar", value=600)
+    db.session.add(entry)
+    db.session.commit()
