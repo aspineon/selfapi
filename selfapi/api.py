@@ -2,9 +2,6 @@ from . import db, api, DietEntry, Profile
 from flask.ext.restful import reqparse, Resource, abort, fields, marshal_with
 from datetime import datetime, timedelta
 
-parser = reqparse.RequestParser()
-
-
 def wrap_as_list(cursor):
     return [x for x in cursor]
 
@@ -21,10 +18,12 @@ diet_fields = {
 class DietList(Resource):
     @marshal_with(diet_fields)
     def get(self):
+        parser = reqparse.RequestParser()
         parser.add_argument('date', type=unicode)
         args = parser.parse_args()
 
         if args.date:
+            print("with date")
             date = datetime.strptime(args.date, '%Y-%m-%d')
             entries = DietEntry.query.filter(DietEntry.timestamp.between(date, date + timedelta(days=1)))
         else :
@@ -37,6 +36,7 @@ class DietList(Resource):
 
 
     def post(self):
+        parser = reqparse.RequestParser()
         parser.add_argument('title', type=unicode, required=True)
         parser.add_argument('value', type=int, required=True)
         parser.add_argument('timestamp', type=unicode)
