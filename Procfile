@@ -1,1 +1,1 @@
-web: gunicorn selfapi:app
+web: gunicorn selfapi:app --log-file -
